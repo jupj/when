@@ -1,17 +1,46 @@
+// zoneinfo.go is a script to generate the list of zone names
+
 // +build !windows
+// +build ignore
 
 package main
 
 import (
 	"archive/zip"
 	"errors"
+	"flag"
 	"fmt"
 	"io/fs"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
+	"sort"
+	"strings"
 	"unicode"
 )
+
+func main() {
+	var outfile string
+	flag.StringVar(&outfile, "o", outfile, "write zone list to `file`")
+	flag.Parse()
+
+	if outfile == "" {
+		log.Fatal("Please specify -o flag")
+	}
+
+	zones, err := readTZNames()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sort.Strings(zones)
+
+	err = os.WriteFile(outfile, []byte(strings.Join(zones, "\n")), 0664)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 // readTZNames returns a list of time zone names, read from the OS
 func readTZNames() ([]string, error) {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"flag"
 	"fmt"
 	"log"
@@ -10,6 +11,11 @@ import (
 	"text/tabwriter"
 	"time"
 )
+
+//go:generate go run gen_zones.go -o zones.txt
+
+//go:embed zones.txt
+var zones string
 
 // find returns the entries in tzNames that contain name as a substring
 func find(tzNames []string, name string) []string {
@@ -40,10 +46,7 @@ func run(args []string) error {
 		return err
 	}
 
-	names, err := readTZNames()
-	if err != nil {
-		return err
-	}
+	names := strings.Split(zones, "\n")
 
 	zones := []*time.Location{time.Local}
 

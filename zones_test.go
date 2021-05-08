@@ -1,12 +1,12 @@
 package main
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestZones(t *testing.T) {
-	zs, err := readTZNames()
-	if err != nil {
-		t.Fatal(err)
-	}
+	zs := strings.Split(zones, "\n")
 
 	const expectedLen = 607
 	if len(zs) != expectedLen {
