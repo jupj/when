@@ -52,7 +52,7 @@ func run(args []string) error {
 		if len(z) == 0 {
 			return fmt.Errorf("can't find any timezones for %q", arg)
 		} else if len(z) > 1 {
-			return fmt.Errorf("multiple results for %q: %v", arg, z)
+			return fmt.Errorf("multiple results for %q: %s", arg, strings.Join(z, ", "))
 		}
 
 		loc, err := time.LoadLocation(z[0])
@@ -95,7 +95,8 @@ func run(args []string) error {
 			// convert local time => zone time
 			zt := time.Date(y, m, d, h, 3, 0, 0, time.Local).In(z)
 			if zt.Hour() == 0 {
-				fmt.Fprint(w, zt.Format("Mon"))
+				dayStr := zt.Format("Mon")
+				fmt.Fprint(w, dayStr[:2])
 			} else if h == now.Hour() {
 				fmt.Fprintf(w, "*%d", zt.Hour())
 			} else {
