@@ -71,7 +71,7 @@ func run(args []string) error {
 
 	now := time.Now().Local()
 	_, localoffset := now.Zone()
-	y, m, d := now.Year(), now.Month(), now.Day()
+	y, m, d, h := now.Year(), now.Month(), now.Day(), now.Hour()
 
 	fmt.Println(now.Format("Monday 2006-01-02 (MST -07:00)"))
 	fmt.Fprintln(w, "Zone\t \u0394t\tTime")
@@ -80,8 +80,11 @@ func run(args []string) error {
 		location := path.Base(z.String())
 		fmt.Fprintf(w, "%s\t", location)
 
+		// zoneStart is the time corresponding to local 0:00
+		zoneStart := time.Date(y, m, d, 0, 0, 0, 0, time.Local).In(z)
+
 		// Calculate offset to local zone
-		_, offset := now.In(z).Zone()
+		_, offset := zoneStart.Zone()
 		offset = offset - localoffset
 		offH, offMin := offset/3600, (offset%3600)/60
 		if z != time.Local {
@@ -91,31 +94,33 @@ func run(args []string) error {
 				fmt.Fprintf(w, "%+d:%.2d", offH, offMin)
 			}
 		}
+
 		fmt.Fprint(w, "\t")
 
 		// Print hours
-		for h := 0; h < 24; h++ {
-			// convert local time => zone time
-			zt := time.Date(y, m, d, h, 3, 0, 0, time.Local).In(z)
+		var hours []string
+		for i := 0; i < 24; i++ {
+			zt := zoneStart.Add(time.Duration(i) * time.Hour)
+
+			str := fmt.Sprintf("%2d", zt.Hour())
 			if zt.Hour() == 0 {
-				dayStr := zt.Format("Mon")
-				fmt.Fprint(w, dayStr[:2])
-			} else if h == now.Hour() {
-				fmt.Fprintf(w, "*%d", zt.Hour())
-			} else {
-				fmt.Fprint(w, zt.Hour())
+				// Display weekday instead of 0 hours
+				str = zt.Format("Mon")[:2]
 			}
-			fmt.Fprint(w, "\t")
+
+			hours = append(hours, colFmt(str, zt.Hour(), i == h))
 		}
-		fmt.Fprintln(w)
+		fmt.Fprintf(w, "%s\t\n", strings.Join(hours, " "))
 
 		// Print minutes, if non-zero
 		if offMin != 0 {
-			fmt.Fprint(w, "\tmins:\t")
-			for h := 0; h < 24; h++ {
-				fmt.Fprintf(w, "%d\t", offMin)
+			fmt.Fprint(w, "\t min\t")
+			var minutes []string
+			for i := 0; i < 24; i++ {
+				zt := zoneStart.Add(time.Duration(i) * time.Hour)
+				minutes = append(minutes, colFmt(fmt.Sprintf("%2d", offMin), zt.Hour(), i == h))
 			}
-			fmt.Fprintln(w)
+			fmt.Fprintf(w, "%s\t\n", strings.Join(minutes, " "))
 		}
 	}
 
