@@ -154,7 +154,7 @@ func run(args []string) error {
 				str = zt.Format("Mon")[:2]
 			}
 
-			hours = append(hours, colFmt(str, zt.Hour(), i == h))
+			hours = append(hours, colFmt(str, zt, i == h))
 		}
 		fmt.Fprintf(w, "%s\t\n", strings.Join(hours, " "))
 
@@ -164,7 +164,7 @@ func run(args []string) error {
 			var minutes []string
 			for i := 0; i < 24; i++ {
 				zt := zoneStart.Add(time.Duration(i) * time.Hour)
-				minutes = append(minutes, colFmt(fmt.Sprintf("%2d", offMin), zt.Hour(), i == h))
+				minutes = append(minutes, colFmt(fmt.Sprintf("%2d", offMin), zt, i == h))
 			}
 			fmt.Fprintf(w, "%s\t\n", strings.Join(minutes, " "))
 		}
