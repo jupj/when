@@ -6,7 +6,7 @@ import (
 )
 
 func TestZones(t *testing.T) {
-	zs := strings.Split(zones, "\n")
+	zs := strings.Split(zoneData, "\n")
 
 	const expectedLen = 607
 	if len(zs) != expectedLen {

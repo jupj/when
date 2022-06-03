@@ -33,7 +33,7 @@ Options:
 //go:generate go run gen_zones.go -o zones.txt
 
 //go:embed zones.txt
-var zones string
+var zoneData string
 
 // find returns the entries in tzNames that contain name as a substring
 func find(tzNames []string, name string) []string {
@@ -95,8 +95,8 @@ func run(args []string) error {
 	_, localoffset := localtime.Zone()
 	y, m, d, h := localtime.Year(), localtime.Month(), localtime.Day(), localtime.Hour()
 
-	//
-	names := strings.Split(zones, "\n")
+	// Look up zones
+	names := strings.Split(zoneData, "\n")
 
 	zones := []*time.Location{time.Local}
 
