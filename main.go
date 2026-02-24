@@ -121,14 +121,19 @@ func run(args []string) error {
 
 	fmt.Println(localtime.Format("Monday 2006-01-02 (MST -07:00)"))
 	fmt.Fprintln(w, "Zone\t \u0394t\tTime")
+
+	dayStart := time.Date(y, m, d, 0, 0, 0, 0, time.Local)
+	// Due to DST changes there can be between 23-25 hours in a day.
+	// Count hours of the given day.
+	hoursInDay := int(dayStart.AddDate(0, 0, 1).Sub(dayStart).Hours())
+
 	for _, z := range zones {
 		// display only Location from Area/Location
 		location := path.Base(z.String())
 		fmt.Fprintf(w, "%s\t", location)
 
 		// zoneStart is the time corresponding to local 0:00
-		zoneStart := time.Date(y, m, d, 0, 0, 0, 0, time.Local).In(z)
-
+		zoneStart := dayStart.In(z)
 		// Calculate offset to local zone
 		_, offset := zoneStart.Zone()
 		offset = offset - localoffset
@@ -145,7 +150,7 @@ func run(args []string) error {
 
 		// Print hours
 		var hours []string
-		for i := 0; i < 24; i++ {
+		for i := 0; i < hoursInDay; i++ {
 			zt := zoneStart.Add(time.Duration(i) * time.Hour)
 
 			str := fmt.Sprintf("%2d", zt.Hour())
@@ -162,7 +167,7 @@ func run(args []string) error {
 		if offMin != 0 {
 			fmt.Fprint(w, "\t min\t")
 			var minutes []string
-			for i := 0; i < 24; i++ {
+			for i := 0; i < hoursInDay; i++ {
 				zt := zoneStart.Add(time.Duration(i) * time.Hour)
 				minutes = append(minutes, colFmt(fmt.Sprintf("%2d", offMin), zt, i == h))
 			}

@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 * [FIX] Use local time instead of UTC when using the `-d` flag.
+* [FIX] Adjust the number of hours per day when DST changes.
 
 ## 0.1.0 / 2021-05-16
 
