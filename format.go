@@ -13,6 +13,7 @@ const (
 	vtReverse = "7"
 	vtRed     = "31"
 	vtGreen   = "32"
+	vtBlue    = "34"
 )
 
 // escape returns a VT100 escape sequence with the given codes
@@ -52,14 +53,17 @@ func colFmt(s string, t time.Time, currentHour bool) string {
 		codes = append(codes, vtBold)
 	}
 
-	// Coloring
+	// Coloring - use separate colors for each 8-hour block
 	switch {
 	case dstChanged(t):
 		// Highlight change in daylight saving
 		codes = append(codes, vtRed)
-	case 8 <= h && h <= 17:
-		// Green color for office hours
+	case 8 <= h && h < 16:
+		// Green color for day hours
 		codes = append(codes, vtGreen)
+	case h >= 16:
+		// Blue color for evening hours
+		codes = append(codes, vtBlue)
 	}
 
 	if len(codes) == 0 {

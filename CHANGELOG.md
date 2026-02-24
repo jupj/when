@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 * [CHANGE] Update time zone list.
+* [CHANGE] Color hours by 8-hour blocks.
 * [FIX] Use local time instead of UTC when using the `-d` flag.
 * [FIX] Adjust the number of hours per day when DST changes.
 
