@@ -64,7 +64,7 @@ func parseDate(str string) (time.Time, error) {
 	// Add current hour to string
 	str = fmt.Sprintf("%s %.2d", str, now.Hour())
 
-	return time.Parse("2006-01-02 15", str)
+	return time.ParseInLocation("2006-01-02 15", str, time.Local)
 }
 
 // run executes the program with the given arguments
@@ -83,14 +83,14 @@ func run(args []string) error {
 	}
 
 	// Set local time
-	localtime := time.Now().Local()
+	localtime := time.Now()
 	if date != "" {
 		t, err := parseDate(date)
 		if err != nil {
 			return fmt.Errorf("cannot parse -d flag: %w", err)
 		}
 
-		localtime = t.Local()
+		localtime = t
 	}
 	_, localoffset := localtime.Zone()
 	y, m, d, h := localtime.Year(), localtime.Month(), localtime.Day(), localtime.Hour()

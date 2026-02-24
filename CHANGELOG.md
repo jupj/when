@@ -1,3 +1,7 @@
+## [Unreleased]
+
+* [FIX] Use local time instead of UTC when using the `-d` flag.
+
 ## 0.1.0 / 2021-05-16
 
 First release of `when`
