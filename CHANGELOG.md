@@ -1,4 +1,4 @@
-## [Unreleased]
+## 0.2.0 / 2026-02-24
 
 * [CHANGE] Update time zone list.
 * [CHANGE] Color hours by 8-hour blocks.
