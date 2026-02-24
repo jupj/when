@@ -93,7 +93,7 @@ func run(args []string) error {
 		localtime = t
 	}
 	_, localoffset := localtime.Zone()
-	y, m, d, h := localtime.Year(), localtime.Month(), localtime.Day(), localtime.Hour()
+	y, m, d := localtime.Year(), localtime.Month(), localtime.Day()
 
 	// Look up zones
 	names := strings.Split(zoneData, "\n")
@@ -159,7 +159,7 @@ func run(args []string) error {
 				str = zt.Format("Mon")[:2]
 			}
 
-			hours = append(hours, colFmt(str, zt, i == h))
+			hours = append(hours, colFmt(str, zt, zt.Equal(localtime)))
 		}
 		fmt.Fprintf(w, "%s\t\n", strings.Join(hours, " "))
 
@@ -169,7 +169,7 @@ func run(args []string) error {
 			var minutes []string
 			for i := 0; i < hoursInDay; i++ {
 				zt := zoneStart.Add(time.Duration(i) * time.Hour)
-				minutes = append(minutes, colFmt(fmt.Sprintf("%2d", offMin), zt, i == h))
+				minutes = append(minutes, colFmt(fmt.Sprintf("%2d", offMin), zt, zt.Equal(localtime)))
 			}
 			fmt.Fprintf(w, "%s\t\n", strings.Join(minutes, " "))
 		}
