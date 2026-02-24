@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+* [CHANGE] Update time zone list.
 * [FIX] Use local time instead of UTC when using the `-d` flag.
 * [FIX] Adjust the number of hours per day when DST changes.
 

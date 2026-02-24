@@ -6,17 +6,22 @@ import (
 )
 
 func TestZones(t *testing.T) {
-	zs := strings.Split(zoneData, "\n")
-
-	const expectedLen = 607
-	if len(zs) != expectedLen {
-		t.Errorf("got %d zones, expected %d", len(zs), expectedLen)
+	expectedZones := []string{
+		"Africa/Dar_es_Salaam",
+		"America/Toronto",
+		"Asia/Hong_Kong",
+		"Europe/Helsinki",
+		"UTC",
 	}
 
-	for _, zone := range zs {
-		if zone == "Europe/Helsinki" {
-			return
+	got := map[string]bool{}
+	for _, zs := range strings.Split(zoneData, "\n") {
+		got[zs] = true
+	}
+
+	for _, ez := range expectedZones {
+		if !got[ez] {
+			t.Errorf("No %s zone", ez)
 		}
 	}
-	t.Errorf("No Europe/Helsinki zone")
 }
